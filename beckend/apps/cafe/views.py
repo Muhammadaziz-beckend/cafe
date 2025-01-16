@@ -2,7 +2,7 @@ from rest_framework.permissions import *
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from .actions import GetOrderItems
+from .actions import *
 from .filters import *
 from .serializers import *
 from utils.mixins import UltraModelViewSet
@@ -10,7 +10,12 @@ from utils.permissions import IsOwner
 from .models import Order, OrderItem
 
 
-class OrdersViewSet(GetOrderItems, UltraModelViewSet):
+class OrdersViewSet(
+    UpdateGetOrderStatus,
+    GetRevenueAmount,
+    GetOrderItems,
+    UltraModelViewSet,
+):
     queryset = Order.objects.all().order_by("-created_at")
     lookup_field = "id"
     filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]

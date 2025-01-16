@@ -9,10 +9,12 @@ class Order(DateTimeAbstract):
     PAID = "paid"
     READY = "ready"
 
+    STATUS = (PENDING, PAID, READY)
+
     STATUS_CHOICES = [
         (PENDING, "В ожидании"),
-        (PAID, "Оплачено"),
         (READY, "Готово"),
+        (PAID, "Оплачено"),
     ]
 
     table_number = models.IntegerField("номер стола")
