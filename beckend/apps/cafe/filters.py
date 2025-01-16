@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from .models import Order
+from .models import Order, OrderItem
 
 
 class OrderFilter(filters.FilterSet):
@@ -10,4 +10,15 @@ class OrderFilter(filters.FilterSet):
         fields = (
             "owner",
             "status",
+        )
+
+
+class OrderItemsFilter(filters.FilterSet):
+
+    class Meta:
+        model = OrderItem
+        fields = (
+            "order",
+            "dish",
+            "count",
         )
