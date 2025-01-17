@@ -5,6 +5,7 @@ import Right from "./components/main/right.jsx";
 import "./static/css/style.css";
 import Data from "./data/data";
 import OrdersC from "./components/main/orders.jsx";
+import OrderItems from "./components/main/ordersItems.jsx";
 
 const App = () => {
   const { products, setProducts, orders, setOrder, setSearch } = Data();
@@ -49,9 +50,8 @@ const App = () => {
                 <main className="main menu">
                   <div className="container">
                     <div className="main_items">
-                      <Left orders={orders} setOrder={setOrder} order={true}/>
-                      <OrdersC
-                      />
+                      <OrderItems order={true}/>
+                      <OrdersC />
                     </div>
                   </div>
                 </main>
