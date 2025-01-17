@@ -32,6 +32,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = (
+            "id",
             "table_number",
             "status",
         )

@@ -22,3 +22,4 @@ migrations/
 .idea/
 
 static/static_root/*
+media/*
