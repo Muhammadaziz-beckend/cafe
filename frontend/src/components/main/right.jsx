@@ -75,7 +75,7 @@ const Right = ({ products, setProducts, orders, setOrder, setSearch }) => {
 
   return (
     <>
-      <div className="right">
+      <div className="right w-100%">
         <div className="container_right">
           <div className="right_items">
             <div className="header_main_right">

@@ -8,7 +8,17 @@ import OrdersC from "./components/main/orders.jsx";
 import OrderItems from "./components/main/ordersItems.jsx";
 
 const App = () => {
-  const { products, setProducts, orders, setOrder, setSearch } = Data();
+  const {
+    products,
+    setProducts,
+    orders,
+    setOrder,
+    setSearch,
+    ordersData,
+    setOrderData,
+    dataFilter,
+    setDataFilter,
+  } = Data();
 
   return (
     <>
@@ -50,8 +60,13 @@ const App = () => {
                 <main className="main menu">
                   <div className="container">
                     <div className="main_items">
-                      <OrderItems order={true}/>
-                      <OrdersC />
+                      <OrderItems order={true} />
+                      <OrdersC
+                        ordersData={ordersData}
+                        setOrderData={setOrderData}
+                        dataFilter={dataFilter}
+                        setDataFilter={setDataFilter}
+                      />
                     </div>
                   </div>
                 </main>

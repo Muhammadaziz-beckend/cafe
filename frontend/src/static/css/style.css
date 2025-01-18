@@ -14,8 +14,14 @@
   padding: 20px;
 }
 
+.overflow_overlay {
+  height: 92.6vh;
+  overflow: overlay;
+}
+
 .main {
   .container {
+    width: 100% !important;
     .main_items {
       display: flex;
       align-items: center;
