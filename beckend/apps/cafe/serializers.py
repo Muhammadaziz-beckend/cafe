@@ -1,11 +1,24 @@
 from rest_framework import serializers
 from drf_writable_nested import WritableNestedModelSerializer
+from apps.account.models import User
 
 from .models import *
 
 
 # Order
+class OwnerUserSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+        )
+
+
+
 class ListOrderSerializer(serializers.ModelSerializer):
+    owner = OwnerUserSerializer()
 
     class Meta:
         model = Order
@@ -36,6 +49,12 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             "table_number",
             "status",
         )
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        user = request.user
+        validated_data["owner"] = user
+        return super().create(validated_data)
 
 
 # /Order/

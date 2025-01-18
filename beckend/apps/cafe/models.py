@@ -43,7 +43,7 @@ class Order(DateTimeAbstract):
         verbose_name_plural = "Заказы"
 
     def __str__(self):
-        return f"{self.table_number} {self.status}"
+        return f"id:{self.pk} status:{self.status}"
 
 
 class Dish(models.Model):

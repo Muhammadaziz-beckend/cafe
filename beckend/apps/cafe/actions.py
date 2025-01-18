@@ -4,9 +4,10 @@ from rest_framework.generics import get_object_or_404
 from django.utils.dateparse import parse_datetime
 from django.db.models import Sum
 from rest_framework.response import Response
+from django.db.models import Q
 
 from .models import Order
-from apps.cafe.serializers import ListOrderItemsSerializer
+from apps.cafe.serializers import ListOrderItemsSerializer, ListOrderSerializer
 
 
 class GetOrderItems:
@@ -36,43 +37,66 @@ class GetOrderItems:
         return Response(serializer.data)
 
 
+from datetime import timedelta
+
+from django.utils.timezone import is_naive, make_aware
+
+
+def process_datetime(value):
+    if is_naive(value):
+        return make_aware(value)
+    return value
+
+
+from django.utils.timezone import now
+
+
 class GetRevenueAmount:
-
-    @permission_classes(IsAuthenticated)
-    @action(["GET"], False, "revenue")
+    @permission_classes([IsAuthenticated])
+    @action(methods=["get"], detail=False, url_path="revenue")
     def get_revenue_amount(self, request, *args, **kwargs):
-
         start_time = request.query_params.get("start_time")
         end_time = request.query_params.get("end_time")
 
-        if not start_time or not end_time:
-            return Response({"error": "Укажите start_time и end_time"}, status=400)
+        if not start_time:
+            return Response({"error": "Укажите start_time"}, status=400)
 
         try:
             start_time = parse_datetime(start_time)
-            end_time = parse_datetime(end_time)
 
-            if not start_time or not end_time:
+            if not start_time:
                 raise ValueError("Неверный формат даты и времени.")
 
         except ValueError as e:
             return Response({"error": str(e)}, status=400)
 
-        orders = Order.objects.filter(
-            status=Order.PAID,
-            created_at__gte=start_time,
-            created_at__lte=end_time,
+        # Обрабатываем наивные даты
+        if start_time and is_naive(start_time):
+            start_time = make_aware(start_time)
+
+        # Если end_time не передан, используем текущее время
+        if end_time:
+            try:
+                end_time = parse_datetime(end_time)
+                if not end_time:
+                    raise ValueError("Неверный формат end_time.")
+            except ValueError as e:
+                return Response({"error": str(e)}, status=400)
+
+            # Обрабатываем наивные даты для end_time
+            if end_time and is_naive(end_time):
+                end_time = make_aware(end_time)
+        else:
+            end_time = now() + timedelta(hours=1)
+
+        # Фильтруем заказы по диапазону времени
+        orders = Order.objects.filter(created_at__range=(start_time, end_time)).filter(
+            status=Order.PAID
         )
 
-        total_revenue = orders.aggregate(total=Sum("total_price"))["total"] or 0
+        serializer = ListOrderSerializer(orders, many=True)
 
-        return Response(
-            {
-                "start_time": start_time,
-                "end_time": end_time,
-                "total_revenue": total_revenue,
-            }
-        )
+        return Response(serializer.data)
 
 
 class UpdateGetOrderStatus:
