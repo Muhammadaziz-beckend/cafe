@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Post from "../../router/post";
 import Env from "../../utils/env";
 
-const OrderItems = ({ order }) => {
+const OrderItems = ({ order, orderItems }) => {
   const { url, token } = Env();
 
   return (
@@ -35,10 +35,26 @@ const OrderItems = ({ order }) => {
               <span className="total_price">Итог</span>
             </div>
 
+            <div className="left_list">
+              {orderItems?.map((item) => (
+                <>
+                  <div className="item">
+                    <span>{item?.dish?.name}</span>
+                    <span className="text_center">{item?.count}</span>
+                    <span className="text_center">{item?.price} ₽</span>
+                    <span className="text_center">{item?.count * item?.price} ₽</span>
+                  </div>
+                </>
+              ))}
+            </div>
+
             <div className="total_price_main">
               <div className="blok_info">
                 <h2>Общая сумма</h2>
-                <h3>0 ₽</h3>
+                <h3>{orderItems?.reduce(
+                      (acc, item) => (acc += Number(item?.price * item?.count)),
+                      0
+                    )} ₽</h3>
               </div>
             </div>
           </div>

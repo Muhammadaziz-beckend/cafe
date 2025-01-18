@@ -18,6 +18,8 @@ const App = () => {
     setOrderData,
     dataFilter,
     setDataFilter,
+    getOrderId,
+    setGetOrderId,orderItems
   } = Data();
 
   return (
@@ -60,8 +62,12 @@ const App = () => {
                 <main className="main menu">
                   <div className="container">
                     <div className="main_items">
-                      <OrderItems order={true} />
+                      <OrderItems
+                        order={true}
+                        orderItems={orderItems}
+                      />
                       <OrdersC
+                        setGetOrderId={setGetOrderId}
                         ordersData={ordersData}
                         setOrderData={setOrderData}
                         dataFilter={dataFilter}

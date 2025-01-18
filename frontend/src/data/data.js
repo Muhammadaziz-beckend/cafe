@@ -9,6 +9,8 @@ const Data = () => {
   const [search, setSearch] = useState("");
   const [ordersData, setOrdersData] = useState([]);
   const [dataFilter, setDataFilter] = useState({});
+  const [getOrderId, setGetOrderId] = useState();
+  const [orderItems, setOrderItems] = useState([]);
 
   // Получение продуктов по поисковому запросу
   useEffect(() => {
@@ -19,13 +21,17 @@ const Data = () => {
     });
   }, [url, search]);
 
-  // Получение данных заказов
-  useEffect(() => {
-    Get(`${url}orders/`, token).then((r) => {
+  const getOrders = async () => {
+    await Get(`${url}orders/`, token).then((r) => {
       if (r?.status === 200) {
         setOrdersData(r?.data);
       }
     });
+  };
+
+  // Получение данных заказов
+  useEffect(() => {
+    getOrders();
   }, [url]);
 
   // Получение данных выручки на основе фильтра
@@ -39,17 +45,22 @@ const Data = () => {
         );
         if (response?.status === 200) {
           setOrdersData(response?.data);
-          // Здесь я заменил setProducts на setOrders, так как это скорее всего заказ, а не продукты
+        } else {
+          return getOrders();
         }
+      } else {
+        // Если dataFilter пустой, вызываем getOrders()
+        return getOrders();
       }
     };
-
     fetchRevenueData();
   }, [dataFilter]); // Следите за изменениями фильтра и других зависимостей
 
   useEffect(() => {
-    
-  }, []);
+    Get(`${url}orders/${getOrderId}/order_items/`).then((r) => {
+      if (r?.status == 200) setOrderItems(r?.data);
+    });
+  }, [getOrderId]);
 
   return {
     products,
@@ -61,6 +72,8 @@ const Data = () => {
     setOrdersData,
     dataFilter,
     setDataFilter,
+    setGetOrderId,
+    orderItems,
   };
 };
 

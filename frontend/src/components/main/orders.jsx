@@ -10,11 +10,12 @@ const Product = ({
   total_price,
   created_at,
   updated_at,
+  setGetOrderId,
 }) => {
   const statusMap = {
     pending: "В ожидании",
-    paid: "Готово",
-    ready: "Оплачено",
+    paid: "Оплачено",
+    ready: "Готово",
   };
 
   const formatDate = (dateString) => {
@@ -45,7 +46,7 @@ const Product = ({
   };
 
   return (
-    <tr class="hover:bg-gray-100 cur">
+    <tr onClick={() => setGetOrderId(id)} class="hover:bg-gray-100 cur">
       <td class="border border-gray-400 px-4 py-2">{id}</td>
       <td class="border border-gray-400 px-4 py-2">{table_number}</td>
       <td class="border border-gray-400 px-4 py-2">{owner?.username}</td>
@@ -55,11 +56,11 @@ const Product = ({
           <option value="pending" selected={status === "pending"}>
             {statusMap.pending}
           </option>
-          <option value="paid" selected={status === "paid"}>
-            {statusMap.paid}
-          </option>
           <option value="ready" selected={status === "ready"}>
             {statusMap.ready}
+          </option>
+          <option value="paid" selected={status === "paid"}>
+            {statusMap.paid}
           </option>
         </select>
       </td>
@@ -69,26 +70,35 @@ const Product = ({
   );
 };
 
-const OrdersC = ({ ordersData, setOrderData, dataFilter, setDataFilter }) => {
+const OrdersC = ({
+  ordersData,
+  setOrderData,
+  dataFilter,
+  setGetOrderId,
+  setDataFilter,
+}) => {
   const handelSubmit = (event) => {
     event.preventDefault();
-  
+
     const formData = new FormData(event.target);
     let data = {};
-  
+
     for (let [key, value] of formData.entries()) {
       // Преобразование даты, если ключ соответствует полю для даты
-      if (key === 'start_time') {
+      if ((key === "start_time" || key === "end_time") && value) {
         const date = new Date(value); // Преобразуем значение в объект Date
         data[key] = date.toISOString(); // Преобразуем в формат ISO строки (например, 2024-11-27T20:46:00.000Z)
-      } else {
+      } else if (value) {
+        // Добавляем только если значение не пустое
         data[key] = value;
       }
     }
-  
+
+    // Устанавливаем данные в фильтр, если они есть
     setDataFilter(data);
-  };
-  
+};
+
+
 
   return (
     <>
@@ -108,7 +118,6 @@ const OrdersC = ({ ordersData, setOrderData, dataFilter, setDataFilter }) => {
                     name="start_time"
                     placeholder="sdasd"
                     className="w-25 rounded-xl p-2"
-                    required
                   />
                 </label>
                 <label className="label">
@@ -124,7 +133,7 @@ const OrdersC = ({ ordersData, setOrderData, dataFilter, setDataFilter }) => {
                   type="submit"
                   className="submit bg-blue-600 text-neutral-100 p-2  rounded-xl"
                 >
-                  Фильтровать
+                  Расчет выручки
                 </button>
               </form>
             </div>
@@ -159,6 +168,7 @@ const OrdersC = ({ ordersData, setOrderData, dataFilter, setDataFilter }) => {
                       total_price={item?.total_price}
                       created_at={item?.created_at}
                       updated_at={item?.created_at}
+                      setGetOrderId={setGetOrderId}
                     />
                   </>
                 ))}
