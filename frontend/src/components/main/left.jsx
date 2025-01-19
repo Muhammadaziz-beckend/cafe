@@ -12,14 +12,14 @@ const OrdersC = ({ name, count, price }) => {
       <div className="item">
         <span>{name}</span>
         <span className="text_center">{count}</span>
-        <span className="text_center">{price} ₽</span>
+        <span className="text_center">{Math.ceil(price)} ₽</span>
         <span className="text_center">{count * price} ₽</span>
       </div>
     </>
   );
 };
 
-const Left = ({ orders, setOrder ,order}) => {
+const Left = ({ orders, setOrder, order, getOrders }) => {
   const [numberTable, setNumberTable] = useState(null);
   const { url, token } = Env();
 
@@ -38,33 +38,42 @@ const Left = ({ orders, setOrder ,order}) => {
       });
       return;
     }
+    if (orders?.length != 0) {
+      const res = await Post(
+        `${url}orders/`,
+        {
+          table_number: numberTable,
+        },
+        token
+      );
 
-    const res = await Post(
-      `${url}orders/`,
-      {
-        table_number: numberTable,
-      },
-      token
-    );
+      if (!(res?.status == 201)) {
+        toast.error("что-то пошло не так попробуйте снова", {
+          position: "top-left",
+        });
+        return;
+      }
 
-    if (!(res?.status == 201)) {
-      toast.error("что-то пошло не так попробуйте снова", {
+      console.log(order);
+
+      const post = await Post(
+        `${url}orders_items/`,
+        {
+          order_id: res?.data?.id,
+          products: orders,
+        },
+        token
+      );
+      if (post?.status == 201) {
+        toast.info("Заказ сохранён успешно!");
+        getOrders();
+        return setOrder([]);
+      }
+    } else {
+      toast.error("Выберите что-то из меню", {
         position: "top-left",
       });
       return;
-    }
-
-    const post = await Post(
-      `${url}orders_items/`,
-      {
-        order_id: res?.data?.id,
-        products: orders,
-      },
-      token
-    );
-    if (post?.status == 201) {
-      toast.info("Заказ сохранён успешно!");
-      return setOrder([]);
     }
   };
 
@@ -73,10 +82,16 @@ const Left = ({ orders, setOrder ,order}) => {
       <div className="left">
         <div className="container_left">
           <div className="left_main_header">
-            <NavLink to={"/orders/"} className={`orders ${order ? "active": ""}`}>
+            <NavLink
+              to={"/orders/"}
+              className={`orders ${order ? "active" : ""}`}
+            >
               Заказы
             </NavLink>
-            <NavLink to={"/"} className={`crate_order ${order ? "": "active"}`}>
+            <NavLink
+              to={"/"}
+              className={`crate_order ${order ? "" : "active"}`}
+            >
               Оформить заказ
             </NavLink>
           </div>

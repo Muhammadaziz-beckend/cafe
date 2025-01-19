@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Get from "../router/get";
 import Env from "../utils/env";
 
@@ -29,10 +29,17 @@ const Data = () => {
     });
   };
 
+  const filterOrder = (value) => {
+    const filteredOrders = orders.filter((item) => item?.count !== 0);
+    const updatedOrders = [...filteredOrders];
+
+    setOrders(value);
+  };
+
   // Получение данных заказов
   useEffect(() => {
     getOrders();
-  }, [url]);
+  }, []);
 
   // Получение данных выручки на основе фильтра
   useEffect(() => {
@@ -61,15 +68,15 @@ const Data = () => {
       if (r?.status == 200) setOrderItems(r?.data);
     });
   }, [getOrderId]);
-
   return {
     products,
     setProducts,
     orders,
-    setOrders,
+    filterOrder,
     setSearch,
     ordersData,
     setOrdersData,
+    getOrders,
     dataFilter,
     setDataFilter,
     setGetOrderId,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Search from "../../static/images/Vector (20).svg";
 
-const Product = ({ id, image, name, price, orders, setOrder }) => {
+const Product = ({ id, image, name, price, orders, setOrders }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -14,16 +14,20 @@ const Product = ({ id, image, name, price, orders, setOrder }) => {
     const existingOrderIndex = updatedOrders.findIndex(
       (item) => item?.dish_id === id
     );
-
+    console.log(existingOrderIndex);
     if (existingOrderIndex !== -1) {
-      // Если объект с таким id уже существует, обновляем его count
-      updatedOrders[existingOrderIndex].count = count;
+      if (count != 0) {
+        // Если объект с таким id уже существует, обновляем его count
+        updatedOrders[existingOrderIndex].count = count;
+      } else {
+        updatedOrders?.splice(existingOrderIndex, 1);
+      }
     } else {
       // Если объекта нет, добавляем его
-      updatedOrders.push({ dish_id:id, count, name, price });
+      if (count != 0) updatedOrders.push({ dish_id: id, count, name, price });
     }
 
-    setOrder(updatedOrders); // Обновляем заказы
+    setOrders(updatedOrders); // Обновляем заказы
   };
 
   const increment = () => {
@@ -62,7 +66,7 @@ const Product = ({ id, image, name, price, orders, setOrder }) => {
   );
 };
 
-const Right = ({ products, setProducts, orders, setOrder, setSearch }) => {
+const Right = ({ products, setProducts, orders, setOrders, setSearch }) => {
   const handelSubmit = (event) => {
     event.preventDefault();
 
@@ -107,7 +111,7 @@ const Right = ({ products, setProducts, orders, setOrder, setSearch }) => {
                   name={item?.name}
                   price={item?.price}
                   orders={orders}
-                  setOrder={setOrder}
+                  setOrders={setOrders}
                 />
               ))}
             </div>

@@ -12,14 +12,16 @@ const App = () => {
     products,
     setProducts,
     orders,
-    setOrder,
+    filterOrder,
     setSearch,
     ordersData,
     setOrderData,
+    getOrders,
     dataFilter,
     setDataFilter,
     getOrderId,
-    setGetOrderId,orderItems
+    setGetOrderId,
+    orderItems,
   } = Data();
 
   return (
@@ -40,12 +42,12 @@ const App = () => {
                 <main className="main menu">
                   <div className="container">
                     <div className="main_items">
-                      <Left orders={orders} setOrder={setOrder} />
+                      <Left orders={orders} setOrder={filterOrder} getOrders={getOrders}/>
                       <Right
                         products={products}
                         setProducts={setProducts}
                         orders={orders}
-                        setOrder={setOrder}
+                        setOrders={filterOrder}
                         setSearch={setSearch}
                       />
                     </div>
@@ -62,10 +64,7 @@ const App = () => {
                 <main className="main menu">
                   <div className="container">
                     <div className="main_items">
-                      <OrderItems
-                        order={true}
-                        orderItems={orderItems}
-                      />
+                      <OrderItems order={true} orderItems={orderItems} />
                       <OrdersC
                         setGetOrderId={setGetOrderId}
                         ordersData={ordersData}

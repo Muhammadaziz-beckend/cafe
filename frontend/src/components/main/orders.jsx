@@ -47,7 +47,10 @@ const Product = ({
 
   return (
     <tr onClick={() => setGetOrderId(id)} class="hover:bg-gray-100 cur">
-      <td class="border border-gray-400 px-4 py-2">{id}</td>
+      <td className="border border-gray-400 px-4 py-2 id_check_box ">
+        <input type="checkbox" name="deletes"/>
+        {id}
+      </td>
       <td class="border border-gray-400 px-4 py-2">{table_number}</td>
       <td class="border border-gray-400 px-4 py-2">{owner?.username}</td>
       <td class="border border-gray-400 px-4 py-2">{total_price}</td>
@@ -96,9 +99,7 @@ const OrdersC = ({
 
     // Устанавливаем данные в фильтр, если они есть
     setDataFilter(data);
-};
-
-
+  };
 
   return (
     <>
@@ -137,53 +138,60 @@ const OrdersC = ({
                 </button>
               </form>
             </div>
-            <table className="table-auto border-collapse border border-gray-400 w-full text-sm text-gray-800">
-              <thead>
-                <tr class="bg-gray-200 text-left">
-                  <th class="border border-gray-400 px-4 py-2">ID</th>
-                  <th class="border border-gray-400 px-4 py-2">Номер стола</th>
-                  <th class="border border-gray-400 px-4 py-2">Кассир</th>
-                  <th class="border border-gray-400 px-4 py-2">Общая цена</th>
-                  <th class="border border-gray-400 px-4 py-2">Статус</th>
-                  <th class="border border-gray-300 px-4 py-2 flex gap-4">
-                    Дата создания
-                    <div className="filter_date">
-                      <img src={FilterDate} alt="" />
-                    </div>
-                  </th>
-                  <th class="border border-gray-400 px-4 py-2">
-                    Дата обновления
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ordersData?.map((item) => (
-                  <>
-                    <Product
-                      key={item?.id}
-                      id={item?.id}
-                      owner={item?.owner}
-                      table_number={item?.table_number}
-                      status={item?.status}
-                      total_price={item?.total_price}
-                      created_at={item?.created_at}
-                      updated_at={item?.created_at}
-                      setGetOrderId={setGetOrderId}
-                    />
-                  </>
-                ))}
-              </tbody>
-            </table>
+            <form method="post">
+              <table className="table-auto border-collapse border border-gray-400 w-full text-sm text-gray-800">
+                <thead>
+                  <tr class="bg-gray-200 text-left">
+                    <th class="border border-gray-400 px-4 py-2">ID</th>
+                    <th class="border border-gray-400 px-4 py-2">
+                      Номер стола
+                    </th>
+                    <th class="border border-gray-400 px-4 py-2">Кассир</th>
+                    <th class="border border-gray-400 px-4 py-2">Общая цена</th>
+                    <th class="border border-gray-400 px-4 py-2">Статус</th>
+                    <th class="border border-gray-300 px-4 py-2 flex gap-4">
+                      Дата создания
+                      <div className="filter_date">
+                        <img src={FilterDate} alt="" />
+                      </div>
+                    </th>
+                    <th class="border border-gray-400 px-4 py-2">
+                      Дата обновления
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ordersData?.map((item) => (
+                    <>
+                      <Product
+                        key={item?.id}
+                        id={item?.id}
+                        owner={item?.owner}
+                        table_number={item?.table_number}
+                        status={item?.status}
+                        total_price={item?.total_price}
+                        created_at={item?.created_at}
+                        updated_at={item?.created_at}
+                        setGetOrderId={setGetOrderId}
+                      />
+                    </>
+                  ))}
+                </tbody>
+              </table>
 
-            <div className="blok_info_total_price fixed bottom-2 right-5 text-xl font-semibold">
-              <span>Общая цена: </span>
-              <span>
-                {ordersData.reduce(
-                  (acc, item) => (acc += Number(item?.total_price)),
-                  0
-                )}
-              </span>
-            </div>
+              <div className="blok_info_total_price fixed bottom-2 right-5 text-xl font-semibold">
+                <span>Общая цена: </span>
+                <span>
+                  {ordersData.reduce(
+                    (acc, item) => (acc += Number(item?.total_price)),
+                    0
+                  )}
+                </span>
+              </div>
+              <button type="submit" className="button_delete fixed cursor-pointer bg-red-600 text-white p-2 rounded-md bottom-2 left-100 text-xl">
+                Удалить
+              </button>
+            </form>
           </div>
         </div>
       </div>
