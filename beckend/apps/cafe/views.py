@@ -5,12 +5,13 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .actions import *
 from .filters import *
 from .serializers import *
-from utils.mixins import UltraModelViewSet
+from utils.mixins import UltraModelViewSet, MultipleDestroyMixin
 from utils.permissions import IsOwner
 from .models import Order, OrderItem
 
 
 class OrdersViewSet(
+    MultipleDestroyMixin,
     UpdateGetOrderStatus,
     GetRevenueAmount,
     GetOrderItems,
@@ -37,7 +38,10 @@ class OrdersViewSet(
     }
 
 
-class OrderItemsViewSet(UltraModelViewSet):
+class OrderItemsViewSet(
+    UpdateStatusListAction,
+    UltraModelViewSet,
+):
     queryset = OrderItem.objects.all().order_by("-created_at")
     lookup_field = "id"
     filter_backends = [OrderingFilter, SearchFilter, DjangoFilterBackend]

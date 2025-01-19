@@ -128,3 +128,11 @@ class UpdateGetOrderStatus:
                 "READY": "Оплачено",
             }
         )
+
+
+class UpdateStatusListAction:
+
+    @action(["POST"],False,"order_items")
+    def update_status_list(self,request,*args, **kwargs):
+
+        ...
